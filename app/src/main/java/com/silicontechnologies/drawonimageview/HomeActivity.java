@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -35,6 +36,9 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.framelayout)
     FrameLayout frameLayout;
 
+    @BindView(R.id.clear_image)
+    Button clearImage;
+
     DrawView drawView;
     private int requestCode = 100;
 
@@ -57,7 +61,8 @@ public class HomeActivity extends AppCompatActivity {
     public void OnActionClick(View view) {
         switch (view.getId()) {
             case R.id.action_camera:
-                selectImageFromCamera();
+                askForPermission();
+
                 break;
             case R.id.action_gallery:
                 selectImageFromGallery();
@@ -67,6 +72,7 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.clear_image:
                 imageView.setImageBitmap(null);
                 drawView.clear();
+                clearImage.setVisibility(View.GONE);
                 break;
         }
     }
@@ -94,10 +100,12 @@ public class HomeActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            clearImage.setVisibility(View.VISIBLE);
         }
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(photo);
+            clearImage.setVisibility(View.VISIBLE);
         }
     }
 
