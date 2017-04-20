@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import java.io.IOException;
@@ -26,18 +27,27 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.imageview)
     ImageView imageView;
 
+    @BindView(R.id.framelayout)
+    FrameLayout frameLayout;
+
+    DrawView drawView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        drawView = new DrawView(this);
+        frameLayout.addView(drawView);
     }
 
 
     @OnClick({R.id.action_gallery,
             R.id.action_camera,
-            R.id.save_image})
+            R.id.save_image,
+            R.id.clear_image}
+    )
     public void OnActionClick(View view) {
         switch (view.getId()) {
             case R.id.action_camera:
@@ -47,6 +57,9 @@ public class HomeActivity extends AppCompatActivity {
                 selectImageFromGallery();
                 break;
             case R.id.save_image:
+                break;
+            case R.id.clear_image:
+                drawView.clear();
                 break;
         }
     }
