@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,7 +18,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +34,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 1888;
+    private static final int SAVE_REQUEST = 1000;
 
 
     @BindView(R.id.imageview)
@@ -39,8 +46,7 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.clear_image)
     Button clearImage;
 
-    DrawView drawView;
-    private int requestCode = 100;
+    private DrawView drawView;
 
 
     @Override
@@ -48,8 +54,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        drawView = new DrawView(this);
-        frameLayout.addView(drawView);
+
     }
 
 
@@ -61,20 +66,43 @@ public class HomeActivity extends AppCompatActivity {
     public void OnActionClick(View view) {
         switch (view.getId()) {
             case R.id.action_camera:
-                askForPermission();
-
+                askForCameraPermission();
                 break;
             case R.id.action_gallery:
                 selectImageFromGallery();
                 break;
             case R.id.save_image:
+                askForWriteExternalStoragePermission();
                 break;
             case R.id.clear_image:
                 imageView.setImageBitmap(null);
+                removeDrawView();
                 drawView.clear();
                 clearImage.setVisibility(View.GONE);
                 break;
         }
+    }
+
+    private void saveImage() {
+
+        try {
+            frameLayout.setDrawingCacheEnabled(true);
+            frameLayout.buildDrawingCache();
+            Bitmap drawingCache = frameLayout.getDrawingCache();
+            String path = Environment.getExternalStorageDirectory().toString();
+            File file = new File(path, new Random().nextInt() + ".jpg");
+            OutputStream fOut = new FileOutputStream(file);
+            drawingCache.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+            Toast.makeText(this, "Image Saved Successfully", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public void selectImageFromGallery() {
@@ -101,36 +129,69 @@ public class HomeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             clearImage.setVisibility(View.VISIBLE);
+            addDrawView();
         }
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(photo);
             clearImage.setVisibility(View.VISIBLE);
+            addDrawView();
         }
+
     }
 
-    private void askForPermission() {
+    private void askForCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, requestCode);
-
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, CAMERA_REQUEST);
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, requestCode);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
             }
         } else {
             selectImageFromCamera();
         }
     }
 
+    private void askForWriteExternalStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_REQUEST);
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_REQUEST);
+            }
+        } else {
+            saveImage();
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
-            selectImageFromCamera();
-        } else {
-            Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+
+        if (requestCode == CAMERA_REQUEST) {
+            if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
+                selectImageFromCamera();
+            } else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == SAVE_REQUEST) {
+            if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
+                saveImage();
+            } else {
+                Toast.makeText(this, "Unable to save images", Toast.LENGTH_SHORT).show();
+            }
         }
+    }
+
+    public void addDrawView() {
+        drawView = new DrawView(this);
+        frameLayout.addView(drawView);
+    }
+
+    public void removeDrawView() {
+        frameLayout.removeView(drawView);
     }
 
 }

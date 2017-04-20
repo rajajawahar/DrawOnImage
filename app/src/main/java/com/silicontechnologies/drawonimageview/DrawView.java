@@ -47,7 +47,6 @@ public class DrawView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-
         canvas.drawPath(mPath, mPaint);
     }
 
