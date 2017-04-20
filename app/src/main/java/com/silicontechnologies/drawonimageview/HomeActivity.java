@@ -1,15 +1,20 @@
 package com.silicontechnologies.drawonimageview;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -31,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     FrameLayout frameLayout;
 
     DrawView drawView;
+    private int requestCode = 100;
 
 
     @Override
@@ -59,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.save_image:
                 break;
             case R.id.clear_image:
+                imageView.setImageBitmap(null);
                 drawView.clear();
                 break;
         }
@@ -93,4 +100,29 @@ public class HomeActivity extends AppCompatActivity {
             imageView.setImageBitmap(photo);
         }
     }
+
+    private void askForPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, requestCode);
+
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, requestCode);
+            }
+        } else {
+            selectImageFromCamera();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
+            selectImageFromCamera();
+        } else {
+            Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
