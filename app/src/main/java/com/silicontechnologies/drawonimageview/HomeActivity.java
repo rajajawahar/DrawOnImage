@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
 import java.io.File;
@@ -46,6 +49,9 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.clear_image)
     Button clearImage;
 
+    @BindView(R.id.color_radiogroup)
+    RadioGroup radioGroup;
+
     private DrawView drawView;
 
 
@@ -54,8 +60,36 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        addDrawView();
+        radioGroup = (RadioGroup) findViewById(R.id.color_radiogroup);
+        radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
 
     }
+
+
+    OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+            switch (group.getCheckedRadioButtonId()) {
+                case R.id.color_blue:
+                    drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.colorPrimary));
+                    break;
+                case R.id.color_green:
+                    drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.color_green));
+                    break;
+
+                case R.id.color_orange:
+                    drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.color_orange));
+                    break;
+                case R.id.color_red:
+                    drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.color_red));
+                    break;
+                case R.id.color_yellow:
+                    drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.color_yellow));
+                    break;
+            }
+        }
+    };
 
 
     @OnClick({R.id.action_gallery,
@@ -129,7 +163,6 @@ public class HomeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             clearImage.setVisibility(View.VISIBLE);
-            addDrawView();
         }
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
