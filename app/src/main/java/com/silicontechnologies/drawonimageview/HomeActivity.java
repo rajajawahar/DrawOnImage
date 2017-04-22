@@ -50,7 +50,10 @@ public class HomeActivity extends AppCompatActivity {
     Button clearImage;
 
     @BindView(R.id.color_radiogroup)
-    RadioGroup radioGroup;
+    RadioGroup colorRadioGroup;
+
+    @BindView(R.id.pointer_radiogroup)
+    RadioGroup pointerRadioGroup;
 
     private DrawView drawView;
 
@@ -61,13 +64,15 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         addDrawView();
-        radioGroup = (RadioGroup) findViewById(R.id.color_radiogroup);
-        radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
+        colorRadioGroup = (RadioGroup) findViewById(R.id.color_radiogroup);
+        colorRadioGroup.setOnCheckedChangeListener(colorCheckedChangeListener);
+        pointerRadioGroup = (RadioGroup) findViewById(R.id.pointer_radiogroup);
+        pointerRadioGroup.setOnCheckedChangeListener(colorCheckedChangeListener);
 
     }
 
 
-    OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
+    OnCheckedChangeListener colorCheckedChangeListener = new OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
             switch (group.getCheckedRadioButtonId()) {
