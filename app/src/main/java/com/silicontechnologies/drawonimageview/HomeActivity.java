@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
         colorRadioGroup = (RadioGroup) findViewById(R.id.color_radiogroup);
         colorRadioGroup.setOnCheckedChangeListener(colorCheckedChangeListener);
         pointerRadioGroup = (RadioGroup) findViewById(R.id.pointer_radiogroup);
-        pointerRadioGroup.setOnCheckedChangeListener(colorCheckedChangeListener);
+        pointerRadioGroup.setOnCheckedChangeListener(pointerCheckedChangeListener);
 
     }
 
@@ -91,6 +91,24 @@ public class HomeActivity extends AppCompatActivity {
                     break;
                 case R.id.color_yellow:
                     drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.color_yellow));
+                    break;
+            }
+        }
+    };
+
+    OnCheckedChangeListener pointerCheckedChangeListener = new OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+            switch (group.getCheckedRadioButtonId()) {
+                case R.id.pointer_small:
+                    drawView.setStrokeWidth(3);
+                    break;
+                case R.id.pointer_medium:
+                    drawView.setStrokeWidth(6);
+                    break;
+
+                case R.id.pointer_large:
+                    drawView.setStrokeWidth(10);
                     break;
             }
         }
