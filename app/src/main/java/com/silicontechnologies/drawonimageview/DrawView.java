@@ -15,6 +15,7 @@ import android.view.View;
 
 public class DrawView extends View {
 
+
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Path mPath;
@@ -43,6 +44,18 @@ public class DrawView extends View {
         mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
     }
+
+    public void setColor(int selectedColor) {
+        if (mPaint != null)
+            mPaint.setColor(selectedColor);
+    }
+
+    public void setStrokeWidth(int width) {
+        if (mPaint != null) {
+            mPaint.setStrokeWidth(width);
+        }
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
