@@ -85,6 +85,9 @@ public class HomeActivity extends AppCompatActivity {
                     colorRadioGroup.setVisibility(View.GONE);
                     pointerRadioGroup.setVisibility(View.VISIBLE);
                     break;
+                case R.id.radio_text:
+                    drawView.addTextView();
+                    break;
             }
         }
     };
@@ -152,10 +155,7 @@ public class HomeActivity extends AppCompatActivity {
                 askForWriteExternalStoragePermission();
                 break;
             case R.id.clear_image:
-                imageView.setImageBitmap(null);
-                removeDrawView();
                 drawView.clear();
-                clearImage.setVisibility(View.GONE);
                 break;
         }
     }

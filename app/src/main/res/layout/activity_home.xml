@@ -92,6 +92,23 @@
             android:textColor="@drawable/bg_radio_text_selector"
             android:textSize="18sp" />
 
+        <RadioButton
+            android:id="@+id/radio_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_radio_background_selector"
+            android:button="@null"
+            android:gravity="center"
+            android:paddingBottom="4dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="4dp"
+            android:text="Text"
+            android:textColor="@drawable/bg_radio_text_selector"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
 
     </RadioGroup>
 
