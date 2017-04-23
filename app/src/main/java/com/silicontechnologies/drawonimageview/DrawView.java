@@ -1,13 +1,17 @@
 package com.silicontechnologies.drawonimageview;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Build;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 /**
  * Created by rajajawahar on 20/04/17.
@@ -21,9 +25,11 @@ public class DrawView extends View {
     private Path mPath;
     private Paint mBitmapPaint;
     private Paint mPaint;
+    private Context context;
 
-    public DrawView(Context c) {
-        super(c);
+    public DrawView(Context context) {
+        super(context);
+        this.context = context;
 
         mPath = new Path();
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
@@ -54,6 +60,19 @@ public class DrawView extends View {
         if (mPaint != null) {
             mPaint.setStrokeWidth(width);
         }
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void addTextView() {
+        LinearLayout layout = new LinearLayout(context);
+        EditText editText = new EditText(context);
+        editText.setBackground(null);
+        editText.setText("Your Text");
+        layout.addView(editText);
+        layout.measure(mCanvas.getWidth(), mCanvas.getHeight());
+        layout.layout(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+        layout.draw(mCanvas);
     }
 
 
