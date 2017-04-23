@@ -49,11 +49,10 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.clear_image)
     Button clearImage;
 
-    @BindView(R.id.color_radiogroup)
     RadioGroup colorRadioGroup;
-
-    @BindView(R.id.pointer_radiogroup)
     RadioGroup pointerRadioGroup;
+    RadioGroup selectionRadioGroup;
+
 
     private DrawView drawView;
 
@@ -65,12 +64,30 @@ public class HomeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         addDrawView();
         colorRadioGroup = (RadioGroup) findViewById(R.id.color_radiogroup);
-        colorRadioGroup.setOnCheckedChangeListener(colorCheckedChangeListener);
+        selectionRadioGroup = (RadioGroup) findViewById(R.id.radio_selection);
         pointerRadioGroup = (RadioGroup) findViewById(R.id.pointer_radiogroup);
         pointerRadioGroup.setOnCheckedChangeListener(pointerCheckedChangeListener);
+        colorRadioGroup.setOnCheckedChangeListener(colorCheckedChangeListener);
+        selectionRadioGroup.setOnCheckedChangeListener(selectionChangedListenere);
 
     }
 
+
+    OnCheckedChangeListener selectionChangedListenere = new OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+            switch (group.getCheckedRadioButtonId()) {
+                case R.id.radio_color:
+                    colorRadioGroup.setVisibility(View.VISIBLE);
+                    pointerRadioGroup.setVisibility(View.GONE);
+                    break;
+                case R.id.radio_pointer:
+                    colorRadioGroup.setVisibility(View.GONE);
+                    pointerRadioGroup.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+    };
 
     OnCheckedChangeListener colorCheckedChangeListener = new OnCheckedChangeListener() {
         @Override
@@ -109,6 +126,9 @@ public class HomeActivity extends AppCompatActivity {
 
                 case R.id.pointer_large:
                     drawView.setStrokeWidth(10);
+                    break;
+                case R.id.pointer_xlarge:
+                    drawView.setStrokeWidth(15);
                     break;
             }
         }
