@@ -13,8 +13,10 @@ import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -86,7 +88,7 @@ public class HomeActivity extends AppCompatActivity {
                     pointerRadioGroup.setVisibility(View.VISIBLE);
                     break;
                 case R.id.radio_text:
-                    drawView.addTextView();
+                    addTextView();
                     break;
             }
         }
@@ -98,19 +100,24 @@ public class HomeActivity extends AppCompatActivity {
             switch (group.getCheckedRadioButtonId()) {
                 case R.id.color_blue:
                     drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.colorPrimary));
+                    Toast.makeText(HomeActivity.this, "Blue color Selected", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.color_green:
                     drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.color_green));
+                    Toast.makeText(HomeActivity.this, "Green color Selected", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.color_orange:
                     drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.color_orange));
+                    Toast.makeText(HomeActivity.this, "Orange color Selected", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.color_red:
                     drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.color_red));
+                    Toast.makeText(HomeActivity.this, "Red color Selected", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.color_yellow:
                     drawView.setColor(ContextCompat.getColor(HomeActivity.this, R.color.color_yellow));
+                    Toast.makeText(HomeActivity.this, "Yellow color Selected", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -122,16 +129,21 @@ public class HomeActivity extends AppCompatActivity {
             switch (group.getCheckedRadioButtonId()) {
                 case R.id.pointer_small:
                     drawView.setStrokeWidth(3);
+                    Toast.makeText(HomeActivity.this, "Small pointer selected", Toast.LENGTH_SHORT).show();
+
                     break;
                 case R.id.pointer_medium:
                     drawView.setStrokeWidth(6);
+                    Toast.makeText(HomeActivity.this, "Medium pointer selected", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.pointer_large:
                     drawView.setStrokeWidth(10);
+                    Toast.makeText(HomeActivity.this, "Large pointer selected", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.pointer_xlarge:
                     drawView.setStrokeWidth(15);
+                    Toast.makeText(HomeActivity.this, "XLarge pointer selected", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -158,6 +170,38 @@ public class HomeActivity extends AppCompatActivity {
                 drawView.clear();
                 break;
         }
+    }
+
+    public void addTextView() {
+        final EditText editText = new EditText(this);
+        editText.setText("Your Text");
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                float dx = 0, dy = 0, x = 0, y = 0;
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        x = event.getX();
+                        y = event.getY();
+                        dx = x - editText.getX();
+                        dy = y - editText.getY();
+                    }
+                    break;
+                    case MotionEvent.ACTION_MOVE: {
+                        editText.setX(event.getX() - dx);
+                        editText.setY(event.getY() - dy);
+                    }
+                    break;
+                    case MotionEvent.ACTION_UP: {
+                        //your stuff
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+        frameLayout.addView(editText);
     }
 
     private void saveImage() {
